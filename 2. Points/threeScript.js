@@ -27,17 +27,8 @@ function init(){
     camera.position.z = 15;
     camera.lookAt(scene.position);
 
-    light = pointLight(10,15,20,2);
     gloabalLight = ambientLight(0.5);
 
-    //create a Sphere (radius, hsegments , wsegments)
-    var geometry = new THREE.SphereGeometry( 5, 48, 48 );
-    var loader = new THREE.TextureLoader();
-    var diffuseTexture = loader.load( '../textures/earth-diffuse.jpg');
-    var material = new THREE.MeshLambertMaterial( {map: diffuseTexture} );
-    var sphere = new THREE.Mesh( geometry, material );
-    scene.add( sphere );
-    scene.add(light);
     scene.add(gloabalLight);
     scene.add(particleCreate());
     //
@@ -69,10 +60,6 @@ function ambientLight(intensity){
     light.intensity = intensity;
     return light;
 }
-function toRad(deg){
-    return (deg/180) * Math.PI;
-}
-
 function resize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -82,10 +69,9 @@ function particleCreate(){
     var particleCount = 1800,
         particles = new THREE.Geometry(),
         pMaterial = new THREE.PointsMaterial({
-            color: 0xFFFFFF,
-            size: 1
+            color: 0xffffff,
+            size: 10
         });
-
 // now create the individual particles
     for (var p = 0; p < particleCount; p++) {
 
@@ -95,6 +81,7 @@ function particleCreate(){
             pY = Math.random() * 500 - 250,
             pZ = Math.random() * 500 - 250,
             particle = new THREE.Vector3(pX, pY, pZ);
+        pMaterial.color.setHex(randomColor());
 
         // add it to the geometry
         particles.vertices.push(particle);
@@ -108,17 +95,8 @@ function particleCreate(){
 // add it to the scene
     return particleSystem;
 }
-function showVertices(mesh) {
-    var vertices = mesh.geometry.vertices;
-    var vertexGeo = new THREE.SphereGeometry(0.2);
-    var vertexMat = new THREE.MeshPhongMaterial({
-        color: 0x00ff00
-    });
-    vertices.forEach(function (vertex){
-        var vertexMesh = new THREE.Mesh(vertexGeo,vertexMat);
-        vertexMesh.position = vertex;
-        scene.add(vertexMesh);
-    });
+function randomColor() {
+    return Math.random() *  colorVariety;
 }
 window.onload = init;
 // window.addEventListener('resize',resize,false);
